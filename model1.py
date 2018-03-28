@@ -3,6 +3,8 @@ import argparse
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
+import cv2
+import urllib
 import requests
 from io import BytesIO
 
@@ -24,8 +26,8 @@ def predict(model, img, target_size, top_n=3):
   Returns:
     list of predicted labels and their probabilities
   """
-  if img.size != target_size:
-    img = img.resize(target_size)
+  if tuple(img.shape[1::-1]) != target_size:
+    img = cv2.resize(img, dsize=(224, 224))
 
   x = image.img_to_array(img)
   x = np.expand_dims(x, axis=0)
@@ -55,21 +57,26 @@ def plot_preds(image, preds):
 
 if __name__=="__main__":
   a = argparse.ArgumentParser()
-  a.add_argument("--image", help="path to image")
+  a.add_argument("-i", "--image", help="path to image")
   a.add_argument("--image_url", help="url to image")
-  args = a.parse_args()
+  args = vars(a.parse_args())
+  print(args)
+  print(args["image"])
 
-  if args.image is None and args.image_url is None:
+  if args["image"] is None and args["image_url"] is None:
     a.print_help()
     sys.exit(1)
 
-  if args.image is not None:
-    img = Image.open(args.image)
+  if args["image"] is not None:
+    img = cv2.imread(args["image"])
+    print(img)
+    size = tuple(img.shape[1::-1])
     preds = predict(model, img, target_size)
     plot_preds(img, preds)
 
-  if args.image_url is not None:
-    response = requests.get(args.image_url)
-    img = Image.open(BytesIO(response.content))
+  if args["image_url"] is not None:
+    response = urllib.request.urlopen(args["image_url"])
+    img = np.asarray(bytearray(response.read()), dtype="uint8")
+    img = cv2.imdecode(img, cv2.IMREAD_COLOR)
     preds = predict(model, img, target_size)
-plot_preds(img, preds)
+    plot_preds(img, preds)
