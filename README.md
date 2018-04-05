@@ -15,7 +15,7 @@ You need to download FlickrLogos-47 dataset.
 You need to run parser and splitter to have the appropriate file architecture.
 In both scripts you need to change initial path to the path containing your dataset.
 The parser divides the dataset in folders of each class.
-The splitter divides the dataset in train and val.
+The splitter divides the dataset in train and val (80% et 20%)
 
 ```
 python parser_alexia.py
@@ -30,7 +30,7 @@ python transfer_learning.py --train_dir (to define) --val_dir (to define)
 
 ```
 
-### Testing the network
+## Testing the network
 
 
 ```

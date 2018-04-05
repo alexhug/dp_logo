@@ -70,6 +70,7 @@ def replace_last(source_string, replace_what, replace_with):
 
 global_cache = {}
 def cached_listdir(path):
+    """Get list of files from folder"""
     res = global_cache.get(path)
     if res is None:
         res = os.listdir(path)
@@ -77,9 +78,11 @@ def cached_listdir(path):
     return res
 
 def get_random_file(folder):
+    """Get random file from folder"""
     return random.choice(cached_listdir(folder))
 
 def splitter():
+    """A partir du dossier classes créé par le parser, splitter train/val (80%-20%)"""
     new_folder_path = path + "\\val"
     print(new_folder_path)
     try:
@@ -98,18 +101,15 @@ def splitter():
         files_to_move = []
         folder_name = os.path.split(replace_last(folder, "\\", ""))[1]
         for i in range(nb_val):
-            while True:
-                b = get_random_file(folder)
-                if os.path.exists(b):
-                    c = folder + b
-                    d = str(c)
-                    files_to_move += [d]
-                    break
-
+            b = get_random_file(folder)
+            c = folder + b
+            d = str(c)
+            files_to_move += [d]
             i += 1
         for file in files_to_move:
             img_path = new_folder_path + "\\" + folder_name
             shutil.copy(file, img_path)
+            files_to_move.remove(file)
             os.remove(file)
 
 
