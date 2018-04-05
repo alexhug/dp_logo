@@ -119,7 +119,7 @@ def train(args):
     samples_per_epoch=nb_train_samples,
     validation_data=validation_generator,
     nb_val_samples=nb_val_samples,
-    class_weight='auto')
+    class_weight=1)
 
   # fine-tuning
   #setup_to_finetune(model)
@@ -130,7 +130,7 @@ def train(args):
     nb_epoch=nb_epoch,
     validation_data=validation_generator,
     nb_val_samples=nb_val_samples,
-    class_weight='auto')
+    class_weight=1)
 
   model.save(args.output_model_file)
 
